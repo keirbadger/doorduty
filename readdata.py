@@ -13,7 +13,7 @@ class Data:
     def read_duties(self):
         _duties = []
         cursor = self.connection.cursor()
-        retrieve = "Select * from Duty;"
+        retrieve = "Select * from duty;"
         cursor.execute(retrieve)
         rows = cursor.fetchall()
         for row in rows:
@@ -24,7 +24,7 @@ class Data:
     def read_members(self, duties, exclusions):
         _members = []
         cursor = self.connection.cursor()
-        retrieve = "Select * from Member;"
+        retrieve = "Select * from member;"
         cursor.execute(retrieve)
         rows = cursor.fetchall()
         for row in rows:
@@ -32,13 +32,13 @@ class Data:
         self.connection.commit()
         return sorted(
             _members,
-            key=attrgetter('num_duties'),
+            key=attrgetter('avg_num_duties'),
             reverse=False)
 
     def read_exclusions(self):
         _exclusions = []
         cursor = self.connection.cursor()
-        retrieve = "Select * from Exclusion;"
+        retrieve = "Select * from exclusion;"
         cursor.execute(retrieve)
         rows = cursor.fetchall()
         for row in rows:
@@ -49,7 +49,7 @@ class Data:
     def read_sessions(self):
         _sessions = []
         cursor = self.connection.cursor()
-        retrieve = "Select * from Session;"
+        retrieve = "Select * from session;"
         cursor.execute(retrieve)
         rows = cursor.fetchall()
         for row in rows:

@@ -27,32 +27,40 @@ class Member:
         if self.renew_date:
             self.renew_date = datetime.strptime(self.renew_date, '%d/%m/%Y')
         self.num_duties = self.num_duties_in_last_18_months()
+        self.avg_num_duties = self.avg_num_duties_in_last_18_months()
 
-    def renewed_in_last_18_months(self):
+    def renewed_in_last_18_months(self, duty_date):
         if self.renew_date and self.renewed == 1:
             return self.renew_date > \
-                   (datetime.now() - relativedelta(months=18))
+                   (duty_date - relativedelta(months=18))
         return False
 
-    def more_than_6_duties_in_last_year(self):
+    def more_than_6_duties_in_last_year(self,duty_date):
         count = 0
         for duty in self.my_duties:
-            if duty.date > (datetime.now() - relativedelta(years=1)):
+            if duty.date > (duty_date - relativedelta(years=1)):
                 count += 1
         return count >= 6
 
-    def new_joiner(self):
+    def new_joiner(self, duty_date):
         if self.join_date:
             return self.join_date > \
-                   (datetime.now() - relativedelta(days=60))
+                   (duty_date - relativedelta(days=60))
 
-    def num_duties_in_last_18_months(self):
+    def num_duties_in_last_18_months(self, duty_date=datetime.now()):
         count = 0
         for duty in self.my_duties:
-            if duty.date > (datetime.now() - relativedelta(months=18)):
+            if duty.date > (duty_date - relativedelta(months=18)):
                 count += 1
-        if self.renew_date and self.renew_date > (datetime.now() - relativedelta(months=18)):
-            return count/(datetime.now() - self.renew_date).days
+        return count
+
+    def avg_num_duties_in_last_18_months(self, duty_date=datetime.now()):
+        count = 0
+        for duty in self.my_duties:
+            if duty.date > (duty_date - relativedelta(months=18)):
+                count += 1
+        if self.renew_date and self.renew_date > (duty_date - relativedelta(months=18)):
+            return count/(duty_date - self.renew_date).days
         else:
             return count/(18*30)
 
@@ -76,15 +84,17 @@ class Member:
                     return False
         return True
 
-    def add_duty(self, m_num, session_id, date):
-        self.my_duties.append(Duty(m_num, session_id, date))
+    def add_duty(self, m_num, session_id, duty_date):
+        self.my_duties.append(Duty(m_num, session_id, duty_date))
+        self.num_duties = self.num_duties_in_last_18_months(duty_date)
+        self.avg_num_duties = self.avg_num_duties_in_last_18_months(duty_date)
 
-    def more_than_30_days_since_last_duty(self, duty_date):
+    def more_than_50_days_since_last_duty(self, duty_date):
         if len(self.my_duties) == 0:
             return True
 
         sorted_duties = sorted(self.my_duties, key=attrgetter('date'))
-        if sorted_duties[-1].date < (duty_date - relativedelta(days=30)):
+        if sorted_duties[-1].date < (duty_date - relativedelta(days=50)):
             return True
         else:
             return False
@@ -94,10 +104,10 @@ class Member:
                                              self.first_name,
                                              self.second_name,
                                              self.type,
-                                             self.join_date,
-                                             self.renew_date,
-                                             self.renewed,
-                                             self.num_duties)
+                                             self.join_date.strftime("%d/%m/%Y"),
+                                             self.renew_date.strftime("%d/%m/%Y"),
+                                             self.num_duties,
+                                             self.avg_num_duties)
 
 
 

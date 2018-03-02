@@ -5,24 +5,24 @@ from operator import attrgetter
 
 
 start = datetime(2018, 6, 1)
-stop = datetime(2018, 8, 1)
+stop = datetime(2018, 10, 1)
 
 data = Data()
 
 while start < stop:
     start = start + timedelta(days=1)
     for session in data.sessions:
-        for member in sorted(data.members, key=attrgetter('num_duties'), reverse=False):
+        for member in sorted(data.members, key=attrgetter('avg_num_duties'), reverse=False):
             if start.strftime("%A") == session.day and \
                not member.excempt_from_duties() and \
-               member.renewed_in_last_18_months() and \
-               not member.new_joiner() and \
-               not member.more_than_6_duties_in_last_year() and \
+               member.renewed_in_last_18_months(start) and \
+               not member.new_joiner(start) and \
+               not member.more_than_6_duties_in_last_year(start) and \
                member.can_i_do_this_session(session.session_id) and \
                member.can_i_do_this_date(start) and \
-               member.more_than_30_days_since_last_duty(start):
+               member.more_than_50_days_since_last_duty(start):
+                print ("{},{}".format(start.strftime("%d/%m/%Y"), member))
                 member.add_duty(member.m_num, session.session_id, start)
-                print ("{},{}".format(start, member))
                 break
 
         # print("{}:{}:{}:{}".format(member.m_num,
