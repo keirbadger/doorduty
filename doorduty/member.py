@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from duty import Duty
+from doorduty.duty import Duty
 from operator import attrgetter
 
 

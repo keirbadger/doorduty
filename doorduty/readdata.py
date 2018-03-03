@@ -1,10 +1,10 @@
 import pymysql
-from member import Member
-from duty import Duty
-from exclusion import Exclusion
-from session import Session
+from doorduty.member import Member
+from doorduty.duty import Duty
+from doorduty.exclusion import Exclusion
+from doorduty.session import Session
 from operator import attrgetter
-import config
+from doorduty import config
 
 
 
