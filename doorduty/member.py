@@ -25,6 +25,7 @@ class Member:
         if self.join_date:
             self.join_date = datetime.strptime(self.join_date, '%d/%m/%Y')
         if self.renew_date:
+            #print (f"{self.m_num} : {self.renew_date}")
             self.renew_date = datetime.strptime(self.renew_date, '%d/%m/%Y')
         self.num_duties = self.num_duties_in_last_18_months()
         self.avg_num_duties = self.avg_num_duties_in_last_18_months()
@@ -99,16 +100,17 @@ class Member:
         else:
             return False
 
+    # def __repr__(self):
+    #     return "{}:{}:{}:{}:{}:{}:{}:{}".format(self.m_num,
+    #                                          self.first_name,
+    #                                          self.second_name,
+    #                                          self.type,
+    #                                          self.join_date.strftime("%d/%m/%Y"),
+    #                                          self.renew_date.strftime("%d/%m/%Y"),
+    #                                          self.num_duties,
+    #                                          self.avg_num_duties)
+
     def __repr__(self):
-        return "{}:{}:{}:{}:{}:{}:{}:{}".format(self.m_num,
-                                             self.first_name,
-                                             self.second_name,
-                                             self.type,
-                                             self.join_date.strftime("%d/%m/%Y"),
-                                             self.renew_date.strftime("%d/%m/%Y"),
-                                             self.num_duties,
-                                             self.avg_num_duties)
-
-
+        return "{} {}".format(self.first_name,self.second_name)
 
 

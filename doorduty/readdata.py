@@ -7,8 +7,7 @@ from operator import attrgetter
 from doorduty import config
 
 
-
-class Data:
+class ReadData:
 
     def read_duties(self):
         _duties = []
@@ -17,6 +16,7 @@ class Data:
         cursor.execute(retrieve)
         rows = cursor.fetchall()
         for row in rows:
+            #print(row)
             _duties.append(Duty(row))
         self.connection.commit()
         return _duties

@@ -16,4 +16,4 @@ class Duty:
             self.date = args[2]
 
     def __repr__(self):
-        return "{}:{}:{}:{}".format(self.m_num, self.id, self.session_id, self.date)
+        return "{},{},{}".format(self.m_num, self.session_id, self.date)
