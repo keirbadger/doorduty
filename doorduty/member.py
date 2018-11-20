@@ -74,11 +74,15 @@ class Member:
         return False
 
     def can_i_do_this_session(self, session_id):
+        if len(self.my_exclusions) == 0:
+            return True
         for ex in self.my_exclusions:
             if ex.type == 'S':
                 return str(session_id) not in ex.session
 
     def can_i_do_this_date(self, session_date):
+        if len(self.my_exclusions) == 0:
+            return True
         for ex in self.my_exclusions:
             if ex.type == 'D':
                 if ex.start_date <= session_date <= ex.end_date:

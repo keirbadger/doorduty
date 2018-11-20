@@ -9,10 +9,13 @@ from doorduty import config
 
 class ReadData:
 
-    def read_duties(self):
+    def read_duties(self, start_date):
         _duties = []
         cursor = self.connection.cursor()
-        retrieve = "Select * from duty;"
+        retrieve = "Select * from duty where `date` < '" + \
+                   start_date.strftime('%Y-%m-%d %H:%M:%S') + \
+                   "';"
+
         cursor.execute(retrieve)
         rows = cursor.fetchall()
         for row in rows:
@@ -69,14 +72,14 @@ class ReadData:
     def all_sessions(self):
         return self.sessions
 
-    def __init__(self):
+    def __init__(self, start_date):
         self.connection = pymysql.connect(
             host="localhost",
             user=config.AS_DB_USER,
             passwd=config.AS_DB_PASS,
             database=config.AS_DB_NAME,
             port=config.AS_DB_PORT)
-        self.duties = self.read_duties()
+        self.duties = self.read_duties(start_date)
         self.exclusions = self.read_exclusions()
         self.sessions = self.read_sessions()
         self.members = self.read_members(self.duties, self.exclusions)
