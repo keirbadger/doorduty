@@ -2,10 +2,8 @@ import sys
 import argparse
 from dateutil.relativedelta import relativedelta
 
-from doorduty.duty import Duty
 from doorduty.readdata import ReadData
 from datetime import datetime
-from datetime import timedelta
 from operator import attrgetter
 
 from doorduty.writedata import WriteData
@@ -24,13 +22,19 @@ argument_parser.add_argument('--dry-run',
                              default=False,
                              help="Optional: If set then the duties will "
                                   "not be written to the DB")
+argument_parser.add_argument('--debug',
+                             action='store_true',
+                             default=False,
+                             help="Optional: Increases output")
 arguments = argument_parser.parse_args()
 
 
 def calc_duties(dry_run=False):
     start = datetime.strptime(arguments.start_date, '%Y-%m-%d')
     stop = start + relativedelta(months=+int(arguments.num_months))
-    read_data = ReadData(start)
+    read_data = ReadData(start, arguments.debug)
+
+
     write_data = WriteData()
 
     while start < stop:
@@ -39,13 +43,7 @@ def calc_duties(dry_run=False):
                 for member in sorted(read_data.members,
                                      key=attrgetter('avg_num_duties'),
                                      reverse=False):
-                    if not member.excempt_from_duties() and \
-                       member.renewed_in_last_18_months(start) and \
-                       not member.new_joiner(start) and \
-                       not member.more_than_6_duties_in_last_year(start) and \
-                       member.can_i_do_this_session(session.session_id) and \
-                       member.can_i_do_this_date(start) and \
-                       member.more_than_50_days_since_last_duty(start):
+                    if member.able_to_do_duty(duty_date=start, session=session):
                         print("{},{},{},{},{}".format(
                             start.strftime("%d/%m/%Y"),
                             session.day,

@@ -31,7 +31,7 @@ class ReadData:
         cursor.execute(retrieve)
         rows = cursor.fetchall()
         for row in rows:
-            _members.append(Member(row, duties, exclusions))
+            _members.append(Member(row, duties, exclusions, self.debug))
         self.connection.commit()
         return sorted(
             _members,
@@ -72,7 +72,8 @@ class ReadData:
     def all_sessions(self):
         return self.sessions
 
-    def __init__(self, start_date):
+    def __init__(self, start_date, debug):
+        self.debug = debug
         self.connection = pymysql.connect(
             host="localhost",
             user=config.AS_DB_USER,
@@ -83,4 +84,8 @@ class ReadData:
         self.exclusions = self.read_exclusions()
         self.sessions = self.read_sessions()
         self.members = self.read_members(self.duties, self.exclusions)
+        for member in self.members:
+            if member.renewed and not member.excempt_from_duties() and self.debug:
+                print(f"{member}:{member.avg_num_duties}")
+
         self.connection.close()
