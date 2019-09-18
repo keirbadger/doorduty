@@ -40,14 +40,14 @@ class Member:
             print(f"    >6Duties={self.more_than_6_duties_in_last_year(duty_date)}")
             print(f"    Do Sess ={self.can_i_do_this_session(session.session_id)}")
             print(f"    Do Date ={self.can_i_do_this_date(duty_date)}")
-            print(f"    >50Days ={self.more_than_50_days_since_last_duty(duty_date)}")
+            print(f"    >90Days ={self.more_than_90_days_since_last_duty(duty_date)}")
         return not self.excempt_from_duties() and \
             self.renewed_in_last_18_months(duty_date) and \
             not self.new_joiner(duty_date) and \
             not self.more_than_6_duties_in_last_year(duty_date) and \
             self.can_i_do_this_session(session.session_id) and \
             self.can_i_do_this_date(duty_date) and \
-            self.more_than_50_days_since_last_duty(duty_date)
+            self.more_than_90_days_since_last_duty(duty_date)
 
     def renewed_in_last_18_months(self, duty_date):
         if self.renew_date and self.renewed == 1:
@@ -117,12 +117,12 @@ class Member:
         self.num_duties = self.num_duties_in_last_18_months(duty_date)
         self.avg_num_duties = self.avg_num_duties_in_last_18_months(duty_date)
 
-    def more_than_50_days_since_last_duty(self, duty_date):
+    def more_than_90_days_since_last_duty(self, duty_date):
         if len(self.my_duties) == 0:
             return True
 
         sorted_duties = sorted(self.my_duties, key=attrgetter('date'))
-        if sorted_duties[-1].date < (duty_date - relativedelta(days=50)):
+        if sorted_duties[-1].date < (duty_date - relativedelta(days=90)):
             return True
         else:
             return False
